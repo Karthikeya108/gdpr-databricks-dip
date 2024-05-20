@@ -38,7 +38,7 @@ The solution accelarator includes sample scripts for the following tasks
     Option 1: Run the notebooks manually in sequence.
       - Run all the notebooks (except notebook 4. Prod CLM enforcement.py) using a Cluster in Assigned mode (Single User). DBR 13.3 or above
   
-    Option2: Create a workflow and create a Task for each Notebook
+    Option 2: Create a workflow and create a Task for each Notebook
       - Set the following job parameters
 
       | Name    | Value |
@@ -51,6 +51,8 @@ The solution accelarator includes sample scripts for the following tasks
       | target_schema    | default    |
       | free_text    | freetext    |
       | privileged_group_name    | prod-privileged-users    |
+
+    Option 3: Create a workflow with the [JSON definition](worklflow/create_databricks_job.json) using the Jobs API create endpoint or Databricks CLI. Please note that recreating this job requires you to update the highlighted identifiers with the right values.
 
 5. Observe the results: Browse the bronze and silver tables in the specified catalog/schema.
 
