@@ -8,12 +8,13 @@
 
 # COMMAND ----------
 
-
 dbutils.widgets.text("diz_catalog", "pii_data", "DIZ Catalog:");
 dbutils.widgets.text("diz_schema", "default", "DIZ Schema:");
 
 dbutils.widgets.text("prod_catalog", "dss_demo_prod", "Target Prod Catalog:");
 dbutils.widgets.text("target_schema", "default", "Dev/Prod Schema:");
+
+dbutils.widgets.text("privileged_group_name", "default", "prod-privileged-users");
 
 # COMMAND ----------
 
@@ -21,12 +22,13 @@ diz_catalog = dbutils.widgets.get("diz_catalog")
 diz_schema = dbutils.widgets.get("diz_schema")
 prod_catalog = dbutils.widgets.get("prod_catalog")
 target_schema = dbutils.widgets.get("target_schema")
+privileged_group_name = dbutils.widgets.get("privileged_group_name")
 
 # COMMAND ----------
 
 # MAGIC %md 
 # MAGIC
-# MAGIC ## Creation of the Column Mask Function for non authorized group of users to hide the real sensitive values from them
+# MAGIC #### Creation of the Column Mask Function for non authorized group of users to hide the real sensitive values from them
 
 # COMMAND ----------
 
@@ -35,8 +37,10 @@ mask_policy_name = f"{prod_catalog}.{target_schema}.pii_mask"
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC CREATE OR REPLACE FUNCTION mask_policy_name(column STRING) RETURN IF(
-# MAGIC     IS_ACCOUNT_GROUP_MEMBER('dss-prod-privileged-users'),
+# MAGIC USE CATALOG $prod_catalog;
+# MAGIC USE SCHEMA $target_schema;
+# MAGIC CREATE OR REPLACE FUNCTION pii_mask(column STRING) RETURN IF(
+# MAGIC     IS_ACCOUNT_GROUP_MEMBER('$privileged_group_name'),
 # MAGIC     column,
 # MAGIC     hash(column)
 # MAGIC   );
@@ -45,7 +49,7 @@ mask_policy_name = f"{prod_catalog}.{target_schema}.pii_mask"
 
 # MAGIC %md 
 # MAGIC
-# MAGIC ## Application of the Mask Policy and tag on all columns in Prod Catalog tables with identified sensitive information
+# MAGIC #### Application of the Mask Policy and tag on all columns in Prod Catalog tables with identified sensitive information
 # MAGIC
 # MAGIC #### Note - you have to use Shared compute mode in order to apply RLS/CLM policies. This limitation will be waived in the future
 
@@ -68,3 +72,7 @@ for row in dataCollect:
   spark.sql(f"ALTER TABLE {table_name} ALTER COLUMN {column_name} SET TAGS ('pii')")
   spark.sql(f"ALTER TABLE {table_name} ALTER COLUMN {column_name} SET TAGS ('pii_alert' = '{identification_time}')")
   spark.sql(f"ALTER TABLE {table_name} ALTER COLUMN {column_name} SET MASK {mask_policy_name}")
+
+# COMMAND ----------
+
+

@@ -1,0 +1,183 @@
+{
+  "name": "Handling Sensitive Data Workflow",
+  "email_notifications": {
+    "no_alert_for_skipped_runs": false
+  },
+  "webhook_notifications": {},
+  "timeout_seconds": 0,
+  "max_concurrent_runs": 1,
+  "tasks": [
+    {
+      "task_key": "Generate_PII_Data",
+      "run_if": "ALL_SUCCESS",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/1. Generate Raw data",
+        "source": "WORKSPACE"
+      },
+      "job_cluster_key": "Job_cluster",
+      "timeout_seconds": 0,
+      "email_notifications": {},
+      "notification_settings": {
+        "no_alert_for_skipped_runs": false,
+        "no_alert_for_canceled_runs": false,
+        "alert_on_last_attempt": false
+      },
+      "webhook_notifications": {}
+    },
+    {
+      "task_key": "Detect_PII_In_Bronze_Tables",
+      "depends_on": [
+        {
+          "task_key": "Generate_PII_Data"
+        }
+      ],
+      "run_if": "ALL_SUCCESS",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/2. PII Detection",
+        "source": "WORKSPACE"
+      },
+      "job_cluster_key": "Job_cluster",
+      "timeout_seconds": 0,
+      "email_notifications": {},
+      "notification_settings": {
+        "no_alert_for_skipped_runs": false,
+        "no_alert_for_canceled_runs": false,
+        "alert_on_last_attempt": false
+      },
+      "webhook_notifications": {}
+    },
+    {
+      "task_key": "Anonymize_Free_Text_Columns",
+      "depends_on": [
+        {
+          "task_key": "Detect_PII_In_Bronze_Tables"
+        }
+      ],
+      "run_if": "ALL_SUCCESS",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/3. Prod Silver tables ETL",
+        "source": "WORKSPACE"
+      },
+      "job_cluster_key": "Job_cluster",
+      "timeout_seconds": 0,
+      "email_notifications": {},
+      "notification_settings": {
+        "no_alert_for_skipped_runs": false,
+        "no_alert_for_canceled_runs": false,
+        "alert_on_last_attempt": false
+      },
+      "webhook_notifications": {}
+    },
+    {
+      "task_key": "CLM_for_PII_In_Silver_Tables",
+      "depends_on": [
+        {
+          "task_key": "Anonymize_Free_Text_Columns"
+        }
+      ],
+      "run_if": "ALL_SUCCESS",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/4. Prod CLM enforcement",
+        "source": "WORKSPACE"
+      },
+      "job_cluster_key": "Job_cluster",
+      "timeout_seconds": 0,
+      "email_notifications": {},
+      "notification_settings": {
+        "no_alert_for_skipped_runs": false,
+        "no_alert_for_canceled_runs": false,
+        "alert_on_last_attempt": false
+      },
+      "webhook_notifications": {}
+    },
+    {
+      "task_key": "Encrypt_and_Copy_Data_to_Dev_Catalog",
+      "depends_on": [
+        {
+          "task_key": "Detect_PII_In_Bronze_Tables"
+        }
+      ],
+      "run_if": "ALL_SUCCESS",
+      "notebook_task": {
+        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/5. Dev Silver tables security",
+        "source": "WORKSPACE"
+      },
+      "job_cluster_key": "Job_cluster",
+      "timeout_seconds": 0,
+      "email_notifications": {},
+      "notification_settings": {
+        "no_alert_for_skipped_runs": false,
+        "no_alert_for_canceled_runs": false,
+        "alert_on_last_attempt": false
+      },
+      "webhook_notifications": {}
+    }
+  ],
+  "job_clusters": [
+    {
+      "job_cluster_key": "Job_cluster",
+      "new_cluster": {
+        "cluster_name": "",
+        "spark_version": "13.3.x-scala2.12",
+        "azure_attributes": {
+          "first_on_demand": 1,
+          "availability": "ON_DEMAND_AZURE",
+          "spot_bid_max_price": -1
+        },
+        "node_type_id": "Standard_D4ds_v5",
+        "spark_env_vars": {
+          "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+        },
+        "enable_elastic_disk": true,
+        "data_security_mode": "SINGLE_USER",
+        "runtime_engine": "PHOTON",
+        "num_workers": 8
+      }
+    }
+  ],
+  "git_source": {
+    "git_url": "https://github.com/Karthikeya108/gdpr-databricks-dip.git",
+    "git_provider": "gitHub",
+    "git_branch": "code_cleanup_and_comments"
+  },
+  "queue": {
+    "enabled": true
+  },
+  "parameters": [
+    {
+      "name": "dev_catalog",
+      "default": "example_dev"
+    },
+    {
+      "name": "diz_catalog",
+      "default": "example"
+    },
+    {
+      "name": "diz_schema",
+      "default": "test"
+    },
+    {
+      "name": "free_text",
+      "default": "freetext"
+    },
+    {
+      "name": "num_rows",
+      "default": "1000"
+    },
+    {
+      "name": "prod_catalog",
+      "default": "example_prod"
+    },
+    {
+      "name": "target_schema",
+      "default": "test"
+    },
+    {
+      "name": "privileged-group-name",
+      "default": "dss-prod-privileged-users"
+    }
+  ],
+  "run_as": {
+    "user_name": "karthik.subbarao@databricks.com"
+  }
+}

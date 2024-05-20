@@ -1,27 +1,7 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC
-# MAGIC # Creating Presidio Analyzer and Anonimizer UDFs
-
-# COMMAND ----------
-
-dbutils.widgets.text("diz_catalog", "pii_data", "DIZ Catalog:");
-dbutils.widgets.text("diz_schema", "default", "DIZ Schema:");
-dbutils.widgets.text("free_text", "freetext", "Column with a free text:");
-
-dbutils.widgets.text("prod_catalog", "dss_demo_prod", "Target Prod Catalog:");
-dbutils.widgets.text("dev_catalog", "dss_demo_dev", "Target Dev Catalog:");
-dbutils.widgets.text("target_schema", "default", "Dev/Prod Schema:");
-
-# COMMAND ----------
-
-diz_catalog = dbutils.widgets.get("diz_catalog")
-diz_schema = dbutils.widgets.get("diz_schema")
-anonymize_column = dbutils.widgets.get("free_text")
-
-prod_catalog = dbutils.widgets.get("prod_catalog")
-dev_catalog = dbutils.widgets.get("dev_catalog")
-target_schema = dbutils.widgets.get("target_schema")
+# MAGIC #### Creating Presidio Analyzer and Anonimizer UDFs
 
 # COMMAND ----------
 
