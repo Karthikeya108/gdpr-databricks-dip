@@ -1,16 +1,16 @@
-## Solution Accelarator for handling Sensitive data on the Databricks Data Intelligence Platform
+# Solution Accelarator for handling sensitive data on the Databricks Data Intelligence Platform
 
-#### For a detailed conceptual understanding of Handling Secntitive data on the Databricks Data Intelligence Platform, please refer to the following blogpost
+#### For a detailed conceptual understanding of handling sensitive data on the Databricks Data Intelligence Platform, please refer to the following blogpost
 [Handling Sensitive Data with Databricks Data Intelligence Platform]()
 
-#### Requirements:
+## Requirements:
 
 1. Unity Catalog enabled Databricks Workspaces
 2. User with Workspace Admin Privilege
 3. Unity Catalog  enabled cluster with DBR 13.3 or above
 
 
-#### Contents
+## Contents
 
 The solution accelarator includes sample scripts for the following tasks
 
@@ -19,7 +19,7 @@ The solution accelarator includes sample scripts for the following tasks
 3. Encrypt columns (including free text columns)
 4. Apply dynamic column level masking
 
-#### How to run
+## How to run
 
 1. Clone the repository into Databricks Workspace Repo
 
@@ -35,10 +35,10 @@ The solution accelarator includes sample scripts for the following tasks
 
 4. Run the notebooks
 
-    Option 1: Run the notebooks manually in sequence.
+    **Option 1:** Run the notebooks manually in sequence.
       - Run all the notebooks (except notebook 4. Prod CLM enforcement.py) using a Cluster in Assigned mode (Single User). DBR 13.3 or above
   
-    Option 2: Create a workflow and create a Task for each Notebook
+    **Option 2:** Create a workflow and create a Task for each Notebook
       - Set the following job parameters
 
       | Name    | Value |
@@ -52,7 +52,7 @@ The solution accelarator includes sample scripts for the following tasks
       | free_text    | freetext    |
       | privileged_group_name    | prod-privileged-users    |
 
-    Option 3: Create a workflow with the [JSON definition](worklflow/create_databricks_job.json) using the Jobs API create endpoint or Databricks CLI. Please note that recreating this job requires you to update the highlighted identifiers with the right values.
+    **Option 3:** Create a workflow with the [JSON definition](workflow/create_databricks_job.json) using the Jobs API create endpoint or Databricks CLI. Please note that recreating this job requires you to update the highlighted identifiers with the right values.
 
 5. Observe the results: Browse the bronze and silver tables in the specified catalog/schema.
 
