@@ -64,7 +64,6 @@ from pyspark.sql.functions import pandas_udf, col, concat, lit, explode, count, 
 from pyspark.sql.types import ArrayType, StringType, StructType, FloatType, StructField
 from typing import Iterator
 
-
 # COMMAND ----------
 
 from discoverx import DX

@@ -14,10 +14,22 @@
 
 # COMMAND ----------
 
+# Install required Python libs
+%pip install -q faker mimesis presidio_analyzer presidio_anonymizer
+dbutils.library.restartPython()
+
+# COMMAND ----------
+
 # Set up the Notebook Widgets
 dbutils.widgets.text("diz_catalog", "pii_data", "DIZ Catalog:");
 dbutils.widgets.text("diz_schema", "default", "DIZ Schema:");
 dbutils.widgets.text("num_rows", "1000", "Number of rows:");
+
+# COMMAND ----------
+
+diz_catalog = dbutils.widgets.get("diz_catalog")
+diz_schema = dbutils.widgets.get("diz_schema")
+num_rows = int(dbutils.widgets.get("num_rows"))
 
 # COMMAND ----------
 
@@ -33,12 +45,6 @@ dbutils.widgets.text("num_rows", "1000", "Number of rows:");
 
 # COMMAND ----------
 
-# Install required Python libs
-%pip install -q faker mimesis presidio_analyzer presidio_anonymizer
-dbutils.library.restartPython()
-
-# COMMAND ----------
-
 import pandas as pd
 from typing import Iterator
 from pyspark.sql.functions import *
@@ -50,7 +56,16 @@ from faker import Faker
 from mimesis import Generic
 from mimesis.locales import Locale
 
-schema = StructType([
+# COMMAND ----------
+
+@pandas_udf("long")
+def get_id(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
+  for id in batch_iter:
+      yield int(time.time()) + id
+
+# COMMAND ----------
+
+customer_schema = StructType([
   StructField("customer_id", LongType(), False),
   StructField("name", StringType(), False),
   StructField("email", StringType(), False),
@@ -69,18 +84,10 @@ schema = StructType([
   StructField("freetext", StringType(), False)
   ])
 
-fake = Faker('en_US')
-generic = Generic(locale=Locale.EN)
-
 def get_random_pii():
   return random.choice([fake.ascii_free_email(), fake.ipv4(), fake.ipv6()])
 
-@pandas_udf("long")
-def get_customer_id(batch_iter: Iterator[pd.Series]) -> Iterator[pd.Series]:
-  for id in batch_iter:
-      yield int(time.time()) + id
-
-def generate_fake_data(pdf: pd.DataFrame) -> pd.DataFrame:
+def generate_fake_customer_data(pdf: pd.DataFrame) -> pd.DataFrame:
     
   def generate_data(y):
     
@@ -108,22 +115,61 @@ def generate_fake_data(pdf: pd.DataFrame) -> pd.DataFrame:
 
 # COMMAND ----------
 
-def generate_fake_pii_data(num_rows=1000):
-  initial_data = spark.range(1, num_rows+1).withColumn("customer_id", get_customer_id(col("id"))) 
-  return (
-  initial_data
-  .withColumn("partition_id", spark_partition_id())
-  .groupBy("partition_id")
-  .applyInPandas(generate_fake_data, schema)
-  .orderBy(asc("customer_id")))
+employee_schema = StructType([
+  StructField("employee_id", LongType(), False),
+  StructField("name", StringType(), False),
+  StructField("email", StringType(), False),
+  StructField("date_of_birth", DateType(), False),
+  StructField("age", LongType(), False),
+  StructField("address", StringType(), False),
+  StructField("phone_number", StringType(), False),
+  StructField("ssn", StringType(), False),
+  StructField("salary", LongType(), False),
+  StructField("iban", StringType(), False),
+  ])
+
+def generate_fake_employee_data(pdf: pd.DataFrame) -> pd.DataFrame:
+
+  fake = Faker('en_US')
+  generic = Generic(locale=Locale.EN)
+    
+  def generate_data(y):
+    
+    dob = fake.date_between(start_date='-99y', end_date='-18y')
+
+    y["name"] = fake.name()
+    y["email"] = fake.email()
+    y["date_of_birth"] = dob #.strftime("%Y-%m-%d")
+    y["age"] = date.today().year - dob.year
+    y["address"] = fake.address()
+    y["phone_number"] = fake.phone_number()
+    y["ssn"] = fake.ssn()
+    y["salary"] = fake.random_int(min=65000, max=900000)
+    y["iban"] = fake.iban()
+
+    return y
+    
+  return pdf.apply(generate_data, axis=1).drop(["partition_id", "id"], axis=1)
 
 # COMMAND ----------
 
-number_of_rows = int(dbutils.widgets.get("num_rows"))
+fake = Faker('en_US')
+generic = Generic(locale=Locale.EN)
 
-customers_df = generate_fake_pii_data(num_rows=number_of_rows)
-employees_df = generate_fake_pii_data(num_rows=number_of_rows)
+initial_data = spark.range(1, num_rows+1).withColumn("customer_id", get_id(col("id")))
+customers_df = (initial_data
+  .withColumn("partition_id", spark_partition_id())
+  .groupBy("partition_id")
+  .applyInPandas(generate_fake_customer_data, customer_schema)
+  .orderBy(asc("customer_id")))
 
+
+initial_data = spark.range(1, num_rows+1).withColumn("employee_id", get_id(col("id")))
+employees_df = (initial_data
+  .withColumn("partition_id", spark_partition_id())
+  .groupBy("partition_id")
+  .applyInPandas(generate_fake_employee_data, employee_schema)
+  .orderBy(asc("employee_id")))
 
 # COMMAND ----------
 
