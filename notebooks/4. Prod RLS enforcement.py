@@ -32,6 +32,10 @@ privileged_group_name = dbutils.widgets.get("privileged_group_name")
 
 # COMMAND ----------
 
+mask_policy_name = f"{prod_catalog}.{target_schema}.pii_mask"
+
+# COMMAND ----------
+
 # MAGIC %sql
 # MAGIC USE CATALOG $prod_catalog;
 # MAGIC USE SCHEMA $target_schema;
