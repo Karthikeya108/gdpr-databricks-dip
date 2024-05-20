@@ -5,13 +5,14 @@
 # MAGIC This notebooks uses [DiscoverX](https://github.com/databrickslabs/discoverx) to run PII detection with [Presidio](https://microsoft.github.io/presidio/) over a set of tables in Unity Catalog.
 # MAGIC
 # MAGIC The notebook will:
-# MAGIC 1. Use DiscoverX to sample a set of tables from Unity Catalog and unpivot all string columns into a long format dataset
+# MAGIC 1. Use DiscoverX to sample records from a set of tables from Unity Catalog and unpivot all string columns into a long format dataset
 # MAGIC 2. Run PII detection with Presidio
 # MAGIC 3. Compute summarised statistics per table and column and save them in scanning results table
 # MAGIC 4. Create tags in UC for Columns with high probablity of containing sensitive data
 
 # COMMAND ----------
 
+# Set up the Notebook Widgets
 dbutils.widgets.text("diz_catalog", "pii_data", "DIZ Catalog:");
 dbutils.widgets.text("diz_schema", "default", "DIZ Schema:");
 
@@ -26,12 +27,13 @@ dbutils.widgets.text("target_schema", "default", "Dev/Prod Schema:");
 
 # COMMAND ----------
 
-# MAGIC %pip install presidio_analyzer==2.2.33 dbl-discoverx==0.0.5 presidio_anonymizer
+# Install required Python libs
+%pip install presidio_analyzer==2.2.33 dbl-discoverx==0.0.5 presidio_anonymizer
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Download detection model
+# MAGIC #### Download detection model
 
 # COMMAND ----------
 
@@ -40,7 +42,7 @@ dbutils.widgets.text("target_schema", "default", "Dev/Prod Schema:");
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Define variables
+# MAGIC #### Define variables
 
 # COMMAND ----------
 
@@ -72,12 +74,11 @@ dx = DX()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Transform all sampled tables to long format
-# MAGIC
-# MAGIC This will take all columns of type string and unpivot (melt) them into a long format dataset
+# MAGIC #### Transform all sampled tables to long format
 
 # COMMAND ----------
 
+# This will take all columns of type string and unpivot (melt) them into a long format dataset
 unpivoted_df = (
     dx.from_tables(from_tables)
     .unpivot_string_columns(sample_size=sample_size)
@@ -98,7 +99,7 @@ unpivoted_stats.display()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Define Presidio UDFs
+# MAGIC #### Define Presidio UDFs
 # MAGIC
 
 # COMMAND ----------
@@ -145,7 +146,7 @@ analyze = pandas_udf(
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Run PII detections
+# MAGIC #### Run PII detections
 
 # COMMAND ----------
 
@@ -162,7 +163,8 @@ detections.display()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Compute summarised statistics
+# MAGIC ####
+# MAGIC Compute summarised statistics
 
 # COMMAND ----------
 
@@ -193,7 +195,7 @@ summarised_detections.display()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Filtering on the PII entity types and setting sensivity level for classification engine
+# MAGIC #### Filtering on the PII entity types and setting sensivity level for classification engine
 
 # COMMAND ----------
 
@@ -224,7 +226,7 @@ summarised_detections_ranked.display()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Assigning tags in DIZ Catalog for better transparency
+# MAGIC #### Assigning tags in DIZ Catalog for better transparency
 
 # COMMAND ----------
 
@@ -241,8 +243,12 @@ for row in dataCollect:
 
 # MAGIC %md 
 # MAGIC
-# MAGIC ## Saving PII scan results for audit purposes
+# MAGIC #### Saving PII scan results for audit purposes
 
 # COMMAND ----------
 
 summarised_detections_ranked.write.mode("append").option("mergeSchema", "true").saveAsTable(f"{diz_catalog}.{diz_schema}.pii_results")
+
+# COMMAND ----------
+
+

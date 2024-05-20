@@ -3,8 +3,6 @@
 # MAGIC # Publishing cleaned and transformed Bronze tables into Production Catalog 
 # MAGIC
 # MAGIC >For demo purposes only, there are no real data transformations applied below.
-# MAGIC
-# MAGIC >Please note that Shared Compute should be used to run this notebook due to RLS/CLM limitation
 
 # COMMAND ----------
 
@@ -13,8 +11,6 @@
 
 # COMMAND ----------
 
-# MAGIC
-# MAGIC
 # MAGIC %run ./Anonymization_func
 
 # COMMAND ----------
@@ -62,3 +58,7 @@ for table_row in source_tables.collect():
         anonymized_df.write.mode("overwrite").saveAsTable(silver_table_name)
     else:
         spark.table(diz_table_name).write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(silver_table_name)
+
+# COMMAND ----------
+
+

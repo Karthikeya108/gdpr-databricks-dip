@@ -7,7 +7,7 @@
 
 # MAGIC
 # MAGIC %md
-# MAGIC ## Step 1: Install the encryption library
+# MAGIC #### Step 1: Install the encryption library
 
 # COMMAND ----------
 
@@ -39,7 +39,7 @@ anonymize_column = dbutils.widgets.get("free_text")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step 2: Setup the encryption key and tweak
+# MAGIC #### Step 2: Setup the encryption key and tweak
 
 # COMMAND ----------
 
@@ -51,13 +51,15 @@ import secrets
 # If needed generate a 7 byte tweak, store as a secret...
 #tweak = secrets.token_bytes(7).hex()
 
-key = dbutils.secrets.get("encrypt", "fpe_key")
-tweak = dbutils.secrets.get("encrypt", "fpe_tweak")
+# https://learn.microsoft.com/en-us/azure/databricks/security/secrets
+
+key = dbutils.secrets.get("encrypt", "fpekey")
+tweak = dbutils.secrets.get("encrypt", "fpetweak")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step 3: Define the character sets and the expected behavior when we encounter special characters
+# MAGIC #### Step 3: Define the character sets and the expected behavior when we encounter special characters
 
 # COMMAND ----------
 
@@ -82,7 +84,7 @@ SPECIAL_CHARSET = """!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ """
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step 4: Declare some helper functions and our Pandas UDF
+# MAGIC #### Step 4: Declare some helper functions and our Pandas UDF
 
 # COMMAND ----------
 
@@ -194,7 +196,7 @@ fpe_decrypt_pandas_udf = pandas_udf(fpe_decrypt_series, returnType=StringType())
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step 5: Encrypt the data with FPE
+# MAGIC #### Step 5: Encrypt the data with FPE
 
 # COMMAND ----------
 
@@ -240,3 +242,7 @@ for table_row in source_tables.collect():
         anonymized_df.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(silver_table_name)
     else:
         encrypted_table.write.mode('overwrite').option("overwriteSchema", "true").saveAsTable(silver_table_name)
+
+# COMMAND ----------
+
+

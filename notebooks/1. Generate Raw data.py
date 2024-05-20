@@ -3,10 +3,18 @@
 # MAGIC # Raw data ingestion into Bronze tables
 # MAGIC
 # MAGIC For the demo purposes we'll generate 2 tables with sensitive data and save them in our DIZ Catalog, in real world scenario those could be csv files with raw historical data from the new data sources which have been uploaded into Volume of the DIZ catalog by the downstream workload or inserted directly from the source as part of the ingestion pipeline. 
-# MAGIC As those sources have been established years ago with poor documentation, no one in the company knows whether any of the tables contain sensible information. As we follow strict security rules in the company, we'd need to discover which column contain PII before uploading them to LoBs Catalog.
+# MAGIC
+# MAGIC #### Fictional but very often true scenario:
+# MAGIC As the data sources might have been established years ago with poor documentation, no one in the company might know whether any of the tables contain sensitive/PII information. As we follow strict security rules in the company, we'd need to discover which column contain PII before uploading them to LoBs Catalog.
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Initial Setup
+
+# COMMAND ----------
+
+# Set up the Notebook Widgets
 dbutils.widgets.text("diz_catalog", "pii_data", "DIZ Catalog:");
 dbutils.widgets.text("diz_schema", "default", "DIZ Schema:");
 dbutils.widgets.text("num_rows", "1000", "Number of rows:");
@@ -14,17 +22,20 @@ dbutils.widgets.text("num_rows", "1000", "Number of rows:");
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC --Create or choose existing UC Catalog and Schema for storing the data
 # MAGIC USE CATALOG ${diz_catalog};
 # MAGIC USE SCHEMA ${diz_schema};
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Generating Fake PII data
+# MAGIC ### Generating Fake PII data
 
 # COMMAND ----------
 
-# MAGIC %pip install -q faker mimesis presidio_analyzer presidio_anonymizer
+# Install required Python libs
+%pip install -q faker mimesis presidio_analyzer presidio_anonymizer
+dbutils.library.restartPython()
 
 # COMMAND ----------
 
@@ -123,3 +134,7 @@ employees_df = generate_fake_pii_data(num_rows=number_of_rows)
 
 customers_df.write.mode("overwrite").saveAsTable("bronze_customers")
 employees_df.write.mode("overwrite").saveAsTable("bronze_employees")
+
+# COMMAND ----------
+
+
