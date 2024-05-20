@@ -1,4 +1,4 @@
-# Solution Accelarator for handling sensitive data on the Databricks Data Intelligence Platform
+# Solution Accelerator for handling sensitive data on the Databricks Data Intelligence Platform
 
 #### For a detailed conceptual understanding of handling sensitive data on the Databricks Data Intelligence Platform, please refer to the following blogpost
 [Handling Sensitive Data with Databricks Data Intelligence Platform]()
@@ -12,7 +12,7 @@
 
 ## Contents
 
-The solution accelarator includes sample scripts for the following tasks
+The solution accelerator includes sample scripts for the following tasks
 
 1. Generate fake PII data using Python faker library
 2. PII detection and tagging in Unity Catalog governed Tables using Databricks labs project [DiscoverX](https://github.com/databrickslabs/discoverx) and [Presidio](https://github.com/microsoft/presidio)
