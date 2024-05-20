@@ -46,15 +46,15 @@ anonymize_column = dbutils.widgets.get("free_text")
 import secrets  
   
 # If needed generate a 256 bit key, store as a secret...
-#key = secrets.token_bytes(32).hex()
+key = secrets.token_bytes(32).hex()
 
 # If needed generate a 7 byte tweak, store as a secret...
-#tweak = secrets.token_bytes(7).hex()
+tweak = secrets.token_bytes(7).hex()
 
 # https://learn.microsoft.com/en-us/azure/databricks/security/secrets
 
-key = dbutils.secrets.get("encrypt", "fpekey")
-tweak = dbutils.secrets.get("encrypt", "fpetweak")
+#key = dbutils.secrets.get("encrypt", "fpekey")
+#tweak = dbutils.secrets.get("encrypt", "fpetweak")
 
 # COMMAND ----------
 
