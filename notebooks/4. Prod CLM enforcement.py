@@ -67,10 +67,9 @@ dataCollect = pii_results.collect()
 for row in dataCollect:
   table_name = row['prod_table_name']
   column_name = row['column_name']
-  identification_time = row['identification_date']
+  identification_ts = row['identification_date'].replace(microsecond=0)
   print(f"Setting UC tag and column mask for {table_name} in column {column_name}")
-  spark.sql(f"ALTER TABLE {table_name} ALTER COLUMN {column_name} SET TAGS ('pii')")
-  spark.sql(f"ALTER TABLE {table_name} ALTER COLUMN {column_name} SET TAGS ('pii_alert' = '{identification_time}')")
+  spark.sql(f"ALTER TABLE {table_name} ALTER COLUMN {column_name} SET TAGS ('pii' = '{identification_ts}')")
   spark.sql(f"ALTER TABLE {table_name} ALTER COLUMN {column_name} SET MASK {mask_policy_name}")
 
 # COMMAND ----------
