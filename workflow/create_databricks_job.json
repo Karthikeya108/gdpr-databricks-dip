@@ -11,7 +11,7 @@
       "task_key": "Generate_PII_Data",
       "run_if": "ALL_SUCCESS",
       "notebook_task": {
-        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/1. Generate Raw data",
+        "notebook_path": "/Workspace/Repos/username@example.com/gdpr-databricks-dip/notebooks/1. Generate Raw data",
         "source": "WORKSPACE"
       },
       "job_cluster_key": "Job_cluster",
@@ -33,7 +33,7 @@
       ],
       "run_if": "ALL_SUCCESS",
       "notebook_task": {
-        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/2. PII Detection",
+        "notebook_path": "/Workspace/Repos/username@example.com/gdpr-databricks-dip/notebooks/2. PII Detection",
         "source": "WORKSPACE"
       },
       "job_cluster_key": "Job_cluster",
@@ -55,7 +55,7 @@
       ],
       "run_if": "ALL_SUCCESS",
       "notebook_task": {
-        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/3. Prod Silver tables ETL",
+        "notebook_path": "/Workspace/Repos/username@example.com/gdpr-databricks-dip/notebooks/3. Prod Silver tables ETL",
         "source": "WORKSPACE"
       },
       "job_cluster_key": "Job_cluster",
@@ -77,7 +77,7 @@
       ],
       "run_if": "ALL_SUCCESS",
       "notebook_task": {
-        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/4. Prod CLM enforcement",
+        "notebook_path": "/Workspace/Repos/username@example.com/gdpr-databricks-dip/notebooks/4. Prod CLM enforcement",
         "source": "WORKSPACE"
       },
       "job_cluster_key": "Job_cluster",
@@ -99,7 +99,7 @@
       ],
       "run_if": "ALL_SUCCESS",
       "notebook_task": {
-        "notebook_path": "/Workspace/Repos/karthik.subbarao@databricks.com/gdpr-databricks-dip/notebooks/5. Dev Silver tables security",
+        "notebook_path": "/Workspace/Repos/username@example.com/gdpr-databricks-dip/notebooks/5. Dev Silver tables security",
         "source": "WORKSPACE"
       },
       "job_cluster_key": "Job_cluster",
@@ -138,7 +138,7 @@
   "git_source": {
     "git_url": "https://github.com/Karthikeya108/gdpr-databricks-dip.git",
     "git_provider": "gitHub",
-    "git_branch": "code_cleanup_and_comments"
+    "git_branch": "main"
   },
   "queue": {
     "enabled": true
@@ -178,6 +178,6 @@
     }
   ],
   "run_as": {
-    "user_name": "karthik.subbarao@databricks.com"
+    "user_name": "username@example.com"
   }
 }
