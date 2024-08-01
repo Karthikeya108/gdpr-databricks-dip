@@ -1,7 +1,7 @@
 # Solution Accelerator for handling sensitive data on the Databricks Data Intelligence Platform
 
 #### For a detailed conceptual understanding of handling sensitive data on the Databricks Data Intelligence Platform, please refer to the following blogpost
-[Handling Sensitive Data with Databricks Data Intelligence Platform]()
+[Path to Data Protection and Compliance with Databricks Data Intelligence Platform]()
 
 ## Requirements:
 
