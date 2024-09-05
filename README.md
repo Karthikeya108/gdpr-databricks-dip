@@ -62,4 +62,6 @@ The solution accelerator includes sample scripts for the following tasks
 
 5. Observe the results: Browse the bronze and silver tables in the specified catalog/schema.
 
-
+Disclaimer: 
+- The views/opinions expressed here are our own and do not necessarily represent the views/opinions of Databricks.
+- The sample code provided is intended to aid in getting started and may not be production-ready.
