@@ -1,7 +1,7 @@
 # Solution Accelerator for handling sensitive data on the Databricks Data Intelligence Platform
 
 #### For a detailed conceptual understanding of handling sensitive data on the Databricks Data Intelligence Platform, please refer to the following blogpost
-[Path to Data Protection and Compliance with Databricks Data Intelligence Platform]()
+[Path to Data Protection and Compliance with Databricks Data Intelligence Platform](https://medium.com/databricks-unity-catalog-sme/path-to-data-protection-and-compliance-with-databricks-data-intelligence-platform-83f15acbdc60)
 
 ## Requirements:
 
@@ -62,4 +62,6 @@ The solution accelerator includes sample scripts for the following tasks
 
 5. Observe the results: Browse the bronze and silver tables in the specified catalog/schema.
 
-
+### Disclaimer: 
+- The views/opinions expressed here are our own and do not necessarily represent the views/opinions of Databricks.
+- The sample code provided is intended to aid in getting started and may not be production-ready. The code does not have any guarantees/warantees/support. Use it at your own risk.
