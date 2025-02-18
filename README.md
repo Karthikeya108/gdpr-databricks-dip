@@ -54,9 +54,9 @@ The solution accelerator includes sample scripts for the following tasks
 
     **Option 3:** Create a workflow with the [JSON definition](workflow/create_databricks_job.json) using the Jobs API create endpoint or Databricks CLI. Please note that recreating this job requires you to update the highlighted identifiers with the right values. 
 
-        3a. Copy the contents of the [JSON definition](workflow/create_databricks_job.json) file and change the string "username@example.com" with your Databricks username.
+        3a. Copy the contents of the [JSON definition](workflow/create_databricks_job.json) file and change the string "username@example.com" with your Databricks username (i.e., replace the path to the notebooks).
 
-        3b. Create a job (via Databricks Cli or Databricks REST API) using the json (Example: `databricks jobs create --json '<json content>'`)
+        3b. Create a job (via Databricks Cli or Databricks REST API) using the json (Example: `databricks jobs create --json '<json content>'` OR `databricks jobs create --json @./workflow/create_databricks_job.json`)
 
     ![Workflow](imgs/workflow.png)
 
